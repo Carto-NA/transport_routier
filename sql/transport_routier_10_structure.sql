@@ -42,6 +42,7 @@ DROP TABLE IF EXISTS gtfs_test.wheelchair_boardings cascade;
 DROP TABLE IF EXISTS gtfs_test.wheelchair_accessible cascade;
 DROP TABLE IF EXISTS gtfs_test.transfer_types cascade;
 
+
 ------------------------------------------------------------------------ 
 -- Tables : Création des tables
 ------------------------------------------------------------------------
@@ -65,10 +66,6 @@ CREATE TABLE gtfs_test.feed_info (
 );
 
 
------------------------------------------------------------------------- 
--- Tables : Création des tables
-------------------------------------------------------------------------
-
 ------------------------------------------------------------------------
 -- Table: gtfs_test.agency
 -- DROP TABLE gtfs_test.agency;
@@ -88,47 +85,77 @@ CREATE TABLE gtfs_test.agency (
 );
 
 
-
+------------------------------------------------------------------------
+-- Table: gtfs_test.exception_types
 --related to calendar_dates(exception_type)
+-- DROP TABLE gtfs_test.exception_types;
 CREATE TABLE gtfs_test.exception_types (
   exception_type int PRIMARY KEY,
   description text
 );
 
+
+------------------------------------------------------------------------
+-- Table: gtfs_test.wheelchair_accessible
 --related to stops(wheelchair_accessible)
+-- DROP TABLE gtfs_test.wheelchair_accessible;
 CREATE TABLE gtfs_test.wheelchair_accessible (
   wheelchair_accessible int PRIMARY KEY,
   description text
 );
 
+
+------------------------------------------------------------------------
+-- Table: gtfs_test.wheelchair_boardings
 --related to stops(wheelchair_boarding)
+-- DROP TABLE gtfs_test.wheelchair_boardings;
 CREATE TABLE gtfs_test.wheelchair_boardings (
   wheelchair_boarding int PRIMARY KEY,
   description text
 );
 
+
+------------------------------------------------------------------------
+-- Table: gtfs_test.pickup_dropoff_types
+-- DROP TABLE gtfs_test.pickup_dropoff_types;
 CREATE TABLE gtfs_test.pickup_dropoff_types (
   type_id int PRIMARY KEY,
   description text
 );
 
+
+------------------------------------------------------------------------
+-- Table: gtfs_test.transfer_types
+-- DROP TABLE gtfs_test.transfer_types;
 CREATE TABLE gtfs_test.transfer_types (
   transfer_type int PRIMARY KEY,
   description text
 );
 
+
+------------------------------------------------------------------------
+-- Table: gtfs_test.location_types
 --related to stops(location_type)
+-- DROP TABLE gtfs_test.location_types;
 CREATE TABLE gtfs_test.location_types (
   location_type int PRIMARY KEY,
   description text
 );
 
+
+------------------------------------------------------------------------
+-- Table: gtfs_test.timepoints
 -- related to stop_times(timepoint)
+-- DROP TABLE gtfs_test.timepoints;
 CREATE TABLE gtfs_test.timepoints (
   timepoint int PRIMARY KEY,
   description text
 );
 
+
+------------------------------------------------------------------------
+-- Table: gtfs_test.calendar
+-- DROP TABLE gtfs_test.calendar;
 CREATE TABLE gtfs_test.calendar (
   feed_index integer not null,
   service_id text,
@@ -148,6 +175,9 @@ CREATE TABLE gtfs_test.calendar (
 CREATE INDEX calendar_service_id ON gtfs_test.calendar (service_id);
 
 
+------------------------------------------------------------------------
+-- Table: gtfs_test.stops
+-- DROP TABLE gtfs_test.stops;
 CREATE TABLE gtfs_test.stops (
   feed_index int not null,
   stop_id text,
@@ -180,6 +210,12 @@ SELECT AddGeometryColumn('gtfs_test', 'stops', 'the_geom', 4326, 'POINT', 2);
 --
 GRANT ALL ON TABLE gtfs_test.stops TO "pre-sig-usr";
 GRANT SELECT ON TABLE gtfs_test.stops TO "pre-sig-ro";
+
+--
+TRUNCATE TABLE gtfs_test.stops;
+INSERT INTO gtfs_test.stops(feed_index,stop_id, stop_name, stop_desc, stop_lat, stop_lon, parent_station, wheelchair_boarding, location_type, the_geom)
+SELECT 2,stop_id, stop_name, stop_desc, stop_lat, stop_lon, parent_station, wheelchair_boarding,  location_type, geom
+FROM z_maj.gtfs_stops;
 
 
 -- trigger the_geom update with lat or lon inserted
@@ -224,6 +260,13 @@ CREATE TABLE gtfs_test.routes (
 --
 GRANT ALL ON TABLE gtfs_test.routes TO "pre-sig-usr";
 GRANT SELECT ON TABLE gtfs_test.routes TO "pre-sig-ro";
+
+-- 
+TRUNCATE TABLE gtfs_test.routes;
+INSERT INTO gtfs_test.routes
+(feed_index, route_id, agency_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color)
+SELECT 2, route_id, agency_id, route_short_name::text, route_long_name::text, route_desc::text, route_type, route_url, route_color, route_text_color
+FROM z_maj.gtfs_routes;
 
 
 
