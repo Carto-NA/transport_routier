@@ -213,8 +213,8 @@ GRANT SELECT ON TABLE gtfs_test.stops TO "pre-sig-ro";
 
 --
 TRUNCATE TABLE gtfs_test.stops;
-INSERT INTO gtfs_test.stops(feed_index,stop_id, stop_name, stop_desc, stop_lat, stop_lon, parent_station, wheelchair_boarding, location_type, the_geom)
-SELECT 2,stop_id, stop_name, stop_desc, stop_lat, stop_lon, parent_station, wheelchair_boarding,  location_type, geom
+INSERT INTO gtfs_test.stops(feed_index,stop_id, stop_name, stop_desc, stop_lat, stop_lon, parent_station, wheelchair_boarding, location_type)
+SELECT 2,stop_id, stop_name, stop_desc, stop_lat, stop_lon, parent_station, wheelchair_boarding,  location_type
 FROM z_maj.gtfs_stops;
 
 
